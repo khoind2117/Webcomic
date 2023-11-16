@@ -1,43 +1,55 @@
-﻿using Webcomic.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Webcomic.Data;
+using Webcomic.Models.Entities;
 using Webcomic.Services.Interfaces;
 
 namespace Webcomic.Services.Implementatiions
 {
     public class TagService : ITagService
     {
-        public bool CreateTag(Tag tag)
+        private readonly ApplicationDbContext _context;
+
+        public TagService(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<bool> CreateTagAsync(Tag tag)
+        {
+            _context.Add(tag);
+            return await SaveAsync();
         }
 
-        public bool DeleteTag(Tag tag)
+        public async Task<bool> DeleteTagAsync(Tag tag)
         {
-            throw new NotImplementedException();
+            _context.Remove(tag);
+            return await SaveAsync();
         }
 
-        public IEnumerable<Tag> GetAllTags()
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Tags.ToListAsync();
         }
 
-        public Tag GetTagById(int tagId)
+        public async Task<Tag> GetTagByIdAsync(int tagId)
         {
-            throw new NotImplementedException();
+            return await _context.Tags.FindAsync(tagId);
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            throw new NotImplementedException();
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
         }
 
-        public bool TagExists(int tagId)
+        public async Task<bool> TagExistsAsync(int tagId)
         {
-            throw new NotImplementedException();
+            return await _context.Tags.AnyAsync(t => t.Id == tagId);
         }
 
-        public bool UpdateTag(Tag tag)
+        public async Task<bool> UpdateTagAsync(Tag tag)
         {
-            throw new NotImplementedException();
+            _context.Update(tag);
+            return await SaveAsync();
         }
     }
 }

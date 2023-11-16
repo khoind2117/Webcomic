@@ -4,12 +4,12 @@ namespace Webcomic.Services.Interfaces
 {
     public interface ITagService
     {
-        IEnumerable<Tag> GetAllTags();
-        Tag GetTagById(int tagId);
-        bool TagExists(int tagId);
-        bool CreateTag(Tag tag);
-        bool UpdateTag(Tag tag);
-        bool DeleteTag(Tag tag);
-        bool Save();
+        Task<IEnumerable<Tag>> GetAllTagsAsync();
+        Task<Tag> GetTagByIdAsync(int tagId);
+        Task<bool> TagExistsAsync(int tagId);
+        Task<bool> CreateTagAsync(Tag tag);
+        Task<bool> UpdateTagAsync(Tag tag);
+        Task<bool> DeleteTagAsync(Tag tag);
+        Task<bool> SaveAsync();
     }
 }

@@ -1,70 +1,67 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Webcomic.Models.DTOs;
 using Webcomic.Models.Entities;
+using Webcomic.Services.Implementatiions;
 using Webcomic.Services.Interfaces;
 
 namespace Webcomic.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ComicController : ControllerBase
+    public class TagController : ControllerBase
     {
-        private readonly IComicService _comicService;
+        private readonly ITagService _tagService;
         private readonly IMapper _mapper;
 
-        public ComicController(IComicService comicService,
-            IMapper mapper)
+        public TagController(ITagService tagService, IMapper mapper)
         {
-            _comicService = comicService;
+            _tagService = tagService;
             _mapper = mapper;
         }
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAllComicsAsync()
+        public async Task<IActionResult> GetAllTagsAsync()
         {
-            IEnumerable<Comic> comics = await _comicService.GetAllComicsAsync();
-            if (comics == null || !comics.Any())
+            IEnumerable<Tag> tags = await _tagService.GetAllTagsAsync();
+            if (tags == null || !tags.Any())
             {
                 return NotFound();
             }
 
-            List<ComicDto> mappedComics = _mapper.Map<List<ComicDto>>(comics);
+            List<TagDto> mappedTags = _mapper.Map<List<TagDto>>(tags);
 
-            return Ok(mappedComics);
+            return Ok(mappedTags);
         }
 
-        [HttpGet("{comicId}")]
+        [HttpGet("{tagId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetComicByIdAsync(int comicId)
+        public async Task<IActionResult> GetTagByIdAsync(int tagId)
         {
-            Comic comic = await _comicService.GetComicByIdAsync(comicId);
+            Tag tag = await _tagService.GetTagByIdAsync(tagId);
 
-            if(comic == null)
+            if (tag == null)
             {
                 return NotFound();
             }
 
-            ComicDto mappedComic = _mapper.Map<ComicDto>(comic);
+            TagDto mappedTag = _mapper.Map<TagDto>(tag);
 
-            return Ok(mappedComic);
+            return Ok(mappedTag);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateComicAsync([FromBody] ComicDto comicToCreate)
+        public async Task<IActionResult> CreateTagAsync([FromBody] TagDto tagToCreate)
         {
-            if (comicToCreate == null)
+            if (tagToCreate == null)
             {
-                return BadRequest("Comic data is invalid or empty.");
+                return BadRequest("Tag data is invalid or empty.");
             }
 
             if (!ModelState.IsValid)
@@ -72,31 +69,31 @@ namespace Webcomic.Controllers
                 return BadRequest(ModelState);
             }
 
-            Comic mappedComic = _mapper.Map<Comic>(comicToCreate);
-            bool isCreateSuccessful = await _comicService.CreateComicAsync(mappedComic);
+            Tag mappedTag = _mapper.Map<Tag>(tagToCreate);
+            bool isCreateSuccessful = await _tagService.CreateTagAsync(mappedTag);
 
             if (!isCreateSuccessful)
             {
-                return StatusCode(500, "Failed to create comic. Please try again later.");
+                return StatusCode(500, "Failed to create tag. Please try again later.");
             }
             return StatusCode(201, "Successfully created.");
         }
 
-        [HttpPut("{comicId}")]
+        [HttpPut("{tagId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateComicAsync(int comicId, [FromBody] ComicDto comicToUpdate)
+        public async Task<IActionResult> UpdateTagAsync(int tagId, [FromBody] TagDto tagToUpdate)
         {
             // Kiểm tra Id có khớp không
-            if(comicId != comicToUpdate.Id)
+            if (tagId != tagToUpdate.Id)
             {
-                return BadRequest("The provided ID does not match the comic to update.");
+                return BadRequest("The provided ID does not match the tag to update.");
             }
 
-            if (comicToUpdate == null)
+            if (tagToUpdate == null)
             {
-                return BadRequest("Comic data is invalid or empty.");
+                return BadRequest("Tag data is invalid or empty.");
             }
 
             if (!ModelState.IsValid)
@@ -105,21 +102,21 @@ namespace Webcomic.Controllers
             }
 
             // Kiểm tra xem truyện tranh có tồn tại không
-            bool isComicExisting = await _comicService.ComicExistsAsync(comicId);
-            if (!isComicExisting)
+            bool isTagExisting = await _tagService.TagExistsAsync(tagId);
+            if (!isTagExisting)
             {
                 return NotFound();
             }
 
             // Cập nhật dữ liệu từ DTO vào truyện tranh hiện có
-            Comic mappedComic = _mapper.Map<Comic>(comicToUpdate);
+            Tag mappedTag = _mapper.Map<Tag>(tagToUpdate);
 
             // Gọi service để cập nhật truyện tranh
-            bool isUpdateSuccessful = await _comicService.UpdateComicAsync(mappedComic);
+            bool isUpdateSuccessful = await _tagService.UpdateTagAsync(mappedTag);
 
             if (!isUpdateSuccessful)
             {
-                return StatusCode(500, "Failed to update comic. Please try again later.");
+                return StatusCode(500, "Failed to update tag. Please try again later.");
             }
 
             return Ok("Successfully updated.");
@@ -129,25 +126,25 @@ namespace Webcomic.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComicAsync(int comicId)
+        public async Task<IActionResult> DeleteTagAsync(int tagId)
         {
-            bool isComicExisting = await _comicService.ComicExistsAsync(comicId);
-            if (!isComicExisting)
+            bool isTagExisting = await _tagService.TagExistsAsync(tagId);
+            if (!isTagExisting)
             {
                 return NotFound();
             }
 
-            Comic comicToDelete = await _comicService.GetComicByIdAsync(comicId);
+            Tag tagToDelete = await _tagService.GetTagByIdAsync(tagId);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            bool isDeleteSuccessful = await _comicService.DeleteComicAsync(comicToDelete);
+            bool isDeleteSuccessful = await _tagService.DeleteTagAsync(tagToDelete);
             if (!isDeleteSuccessful)
             {
-                return StatusCode(500, "Failed to delete comic. Please try again later.");
+                return StatusCode(500, "Failed to delete tag. Please try again later.");
             }
 
             return Ok("Successfully deleted.");

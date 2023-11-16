@@ -8,10 +8,9 @@ namespace Webcomic.Helpers
     {
         public MappingProfiles()
         {
-            CreateMap<Chapter, ChapterDto>();
-            CreateMap<ChapterDto, Chapter>();
-            CreateMap<Comic, ComicDto>();
-            CreateMap<ComicDto, Comic>();
+            CreateMap<Comic, ComicDto>().ReverseMap();
+            CreateMap<Tag, TagDto>().ReverseMap();
+            CreateMap<Chapter, ChapterDto>().ReverseMap();
 
         }
 
