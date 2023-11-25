@@ -15,7 +15,7 @@ namespace Webcomic.Data
         #region DbSet
         public DbSet<Comic> Comics { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<ComicTag> ComicsTags { get; set; }
+        public DbSet<ComicTag> ComicTags { get; set; }
         public DbSet<Chapter> Chapters { get; set; }
         #endregion
 

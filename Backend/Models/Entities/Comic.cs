@@ -2,7 +2,6 @@
 
 namespace Webcomic.Models.Entities
 {
-    [Table("Comic")]
     public class Comic
     {
         public int Id { get; set; }

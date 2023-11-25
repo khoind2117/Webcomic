@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ChapterNumber { get; set; }
+        public int ChapterNumber { get; set; }
         public DateTime PublishDate { get; set; }
     }
 }

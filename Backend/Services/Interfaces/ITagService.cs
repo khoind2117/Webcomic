@@ -11,5 +11,7 @@ namespace Webcomic.Services.Interfaces
         Task<bool> UpdateTagAsync(Tag tag);
         Task<bool> DeleteTagAsync(Tag tag);
         Task<bool> SaveAsync();
+
+        Task<Tag> GetTagByNameAsync(string name);
     }
 }

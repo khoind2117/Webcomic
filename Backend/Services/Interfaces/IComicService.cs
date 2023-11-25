@@ -11,5 +11,7 @@ namespace Webcomic.Services.Interfaces
         Task<bool> UpdateComicAsync(Comic comic);
         Task<bool> DeleteComicAsync(Comic comic);
         Task<bool> SaveAsync();
+
+        IQueryable<Comic> GetAllComicsAsQueryable();
     }
 }

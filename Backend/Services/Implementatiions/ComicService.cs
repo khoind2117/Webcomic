@@ -32,12 +32,19 @@ namespace Webcomic.Services.Implementatiions
 
         public async Task<IEnumerable<Comic>> GetAllComicsAsync()
         {
-            return await _context.Comics.ToListAsync();
+            return await _context.Comics
+                .Include(c => c.ComicTags)
+                    .ThenInclude(ct => ct.Tag)
+                .Include(c => c.Chapters)
+                .ToListAsync();
         }
 
         public async Task<Comic> GetComicByIdAsync(int comicId)
         {
-            return await _context.Comics.FindAsync(comicId);
+            return await _context.Comics.Where(c => c.Id == comicId)
+                .Include(c => c.ComicTags)
+                .ThenInclude(ct => ct.Tag)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> SaveAsync()
@@ -50,6 +57,11 @@ namespace Webcomic.Services.Implementatiions
         {
             _context.Update(comic);
             return await SaveAsync();
+        }
+
+        public IQueryable<Comic> GetAllComicsAsQueryable()
+        {
+            return _context.Comics.AsQueryable();
         }
     }
 }
