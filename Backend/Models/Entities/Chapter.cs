@@ -7,8 +7,8 @@ namespace Webcomic.Models.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ChapterNumber { get; set; }
-        public DateTime PublishDate { get; set; }
+        public int ChapterNumber { get; set; }
+        public DateTime UploadDate { get; set; }
         [Column(TypeName = "nvarchar(MAX)")]
         [MaxLength]
         public string Content { get; set; }

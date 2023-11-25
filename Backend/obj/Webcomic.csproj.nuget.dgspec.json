@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Web Dev\\Clone Github\\Webcomic\\Webcomic.csproj": {}
+    "D:\\Web Dev\\Clone Github\\Webcomic\\Backend\\Webcomic.csproj": {}
   },
   "projects": {
-    "D:\\Web Dev\\Clone Github\\Webcomic\\Webcomic.csproj": {
+    "D:\\Web Dev\\Clone Github\\Webcomic\\Backend\\Webcomic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Web Dev\\Clone Github\\Webcomic\\Webcomic.csproj",
+        "projectUniqueName": "D:\\Web Dev\\Clone Github\\Webcomic\\Backend\\Webcomic.csproj",
         "projectName": "Webcomic",
-        "projectPath": "D:\\Web Dev\\Clone Github\\Webcomic\\Webcomic.csproj",
+        "projectPath": "D:\\Web Dev\\Clone Github\\Webcomic\\Backend\\Webcomic.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Web Dev\\Clone Github\\Webcomic\\obj\\",
+        "outputPath": "D:\\Web Dev\\Clone Github\\Webcomic\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -76,7 +76,7 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[7.0.9, )"
+              "version": "[7.0.11, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

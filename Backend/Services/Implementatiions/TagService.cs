@@ -13,6 +13,7 @@ namespace Webcomic.Services.Implementatiions
         {
             _context = context;
         }
+
         public async Task<bool> CreateTagAsync(Tag tag)
         {
             _context.Add(tag);
@@ -33,6 +34,11 @@ namespace Webcomic.Services.Implementatiions
         public async Task<Tag> GetTagByIdAsync(int tagId)
         {
             return await _context.Tags.FindAsync(tagId);
+        }
+
+        public async Task<Tag> GetTagByNameAsync(string name)
+        {
+            return await _context.Tags.FirstOrDefaultAsync(tag => tag.Name == name);
         }
 
         public async Task<bool> SaveAsync()

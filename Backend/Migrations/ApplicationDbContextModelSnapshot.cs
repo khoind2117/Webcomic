@@ -234,9 +234,8 @@ namespace Webcomic.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ChapterNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ChapterNumber")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ComicId")
                         .HasColumnType("int");
@@ -249,7 +248,7 @@ namespace Webcomic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PublishDate")
+                    b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

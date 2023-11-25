@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Webcomic.Models.DTOs;
+using Webcomic.Models.DTOs.TagDtos;
 using Webcomic.Models.Entities;
 using Webcomic.Services.Implementatiions;
 using Webcomic.Services.Interfaces;
@@ -59,24 +59,41 @@ namespace Webcomic.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTagAsync([FromBody] TagDto tagToCreate)
         {
-            if (tagToCreate == null)
-            {
-                return BadRequest("Tag data is invalid or empty.");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Tag mappedTag = _mapper.Map<Tag>(tagToCreate);
-            bool isCreateSuccessful = await _tagService.CreateTagAsync(mappedTag);
-
-            if (!isCreateSuccessful)
+            try
             {
-                return StatusCode(500, "Failed to create tag. Please try again later.");
+                if (tagToCreate == null)
+                {
+                    return BadRequest("Tag data is invalid or empty.");
+                }
+
+                // Kiểm tra xem tên tag đã tồn tại trong DB chưa
+                Tag existingTag = await _tagService.GetTagByNameAsync(tagToCreate.Name);
+                if (existingTag != null)
+                {
+                    // Nếu tên tag đã tồn tại, trả về thông báo lỗi
+                    return BadRequest("Tag with the same name already exists.");
+                }
+
+                Tag mappedTag = _mapper.Map<Tag>(tagToCreate);
+                
+                bool isCreateSuccessful = await _tagService.CreateTagAsync(mappedTag);
+                if (!isCreateSuccessful)
+                {
+                    return StatusCode(500, "Failed to create tag. Please try again later.");
+                }
+
+                return StatusCode(201, "Successfully created.");
             }
-            return StatusCode(201, "Successfully created.");
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while creating the tag: {ex.Message}");
+            }
+            
         }
 
         [HttpPut("{tagId}")]
@@ -85,41 +102,43 @@ namespace Webcomic.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateTagAsync(int tagId, [FromBody] TagDto tagToUpdate)
         {
-            // Kiểm tra Id có khớp không
-            if (tagId != tagToUpdate.Id)
-            {
-                return BadRequest("The provided ID does not match the tag to update.");
-            }
-
-            if (tagToUpdate == null)
-            {
-                return BadRequest("Tag data is invalid or empty.");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // Kiểm tra xem truyện tranh có tồn tại không
-            bool isTagExisting = await _tagService.TagExistsAsync(tagId);
-            if (!isTagExisting)
+            try
             {
-                return NotFound();
+                if (tagToUpdate == null)
+                {
+                    return BadRequest("Tag data is invalid or empty.");
+                }
+
+
+                // Kiểm tra xem truyện tranh có tồn tại không
+                Tag existingTag = await _tagService.GetTagByIdAsync(tagId);
+                if (existingTag == null)
+                {
+                    return NotFound();
+                }
+
+                // Cập nhật dữ liệu từ DTO vào truyện tranh hiện có
+                Tag mappedTag = _mapper.Map<TagDto,Tag>(tagToUpdate, existingTag);
+
+                // Gọi service để cập nhật truyện tranh
+                bool isUpdateSuccessful = await _tagService.UpdateTagAsync(mappedTag);
+                if (!isUpdateSuccessful)
+                {
+                    return StatusCode(500, "Failed to update tag. Please try again later.");
+                }
+
+                return Ok("Successfully updated.");
             }
-
-            // Cập nhật dữ liệu từ DTO vào truyện tranh hiện có
-            Tag mappedTag = _mapper.Map<Tag>(tagToUpdate);
-
-            // Gọi service để cập nhật truyện tranh
-            bool isUpdateSuccessful = await _tagService.UpdateTagAsync(mappedTag);
-
-            if (!isUpdateSuccessful)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Failed to update tag. Please try again later.");
+                return StatusCode(500, $"An error occurred while updating the tag: {ex.Message}");
             }
-
-            return Ok("Successfully updated.");
+            
         }
 
         [HttpDelete("comicId")]
@@ -128,26 +147,27 @@ namespace Webcomic.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteTagAsync(int tagId)
         {
-            bool isTagExisting = await _tagService.TagExistsAsync(tagId);
-            if (!isTagExisting)
+            try
             {
-                return NotFound();
+                Tag existingTag = await _tagService.GetTagByIdAsync(tagId);
+                if (existingTag == null)
+                {
+                    return NotFound();
+                }
+
+                bool isDeleteSuccessful = await _tagService.DeleteTagAsync(existingTag);
+                if (!isDeleteSuccessful)
+                {
+                    return StatusCode(500, "Failed to delete tag. Please try again later.");
+                }
+
+                return Ok("Successfully deleted.");
             }
-
-            Tag tagToDelete = await _tagService.GetTagByIdAsync(tagId);
-
-            if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
+                // Xử lý các ngoại lệ trong quá trình xóa
+                return StatusCode(500, $"An error occurred while deleting the tag: {ex.Message}");
             }
-
-            bool isDeleteSuccessful = await _tagService.DeleteTagAsync(tagToDelete);
-            if (!isDeleteSuccessful)
-            {
-                return StatusCode(500, "Failed to delete tag. Please try again later.");
-            }
-
-            return Ok("Successfully deleted.");
         }
     }
 }

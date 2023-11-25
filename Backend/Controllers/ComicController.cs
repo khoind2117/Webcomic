@@ -3,7 +3,9 @@ using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Webcomic.Helpers.Pagination;
 using Webcomic.Models.DTOs;
+using Webcomic.Models.DTOs.ComicDtos;
 using Webcomic.Models.Entities;
 using Webcomic.Services.Interfaces;
 
@@ -14,36 +16,51 @@ namespace Webcomic.Controllers
     public class ComicController : ControllerBase
     {
         private readonly IComicService _comicService;
+        private readonly ITagService _tagService;
         private readonly IMapper _mapper;
 
+        private const int DefaultPageSize = 10;
+
         public ComicController(IComicService comicService,
+            ITagService tagService,
             IMapper mapper)
         {
             _comicService = comicService;
+            _tagService = tagService;
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("comics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAllComicsAsync()
+        public async Task<IActionResult> GetAllComics(int page = 1)
         {
-            IEnumerable<Comic> comics = await _comicService.GetAllComicsAsync();
-            if (comics == null || !comics.Any())
+            var comicsQuery = _comicService.GetAllComicsAsQueryable();
+
+            var paginatedList = await PaginatedList<ListComicDto>
+                .Create<Comic, ListComicDto>(comicsQuery, page, DefaultPageSize, _mapper);
+            
+            if (paginatedList == null || paginatedList.Count == 0)
             {
                 return NotFound();
             }
 
-            List<ComicDto> mappedComics = _mapper.Map<List<ComicDto>>(comics);
+            var result = new PageResult<ListComicDto>
+            {
+                TotalCount = paginatedList.TotalCount,
+                PageNumber = paginatedList.PageNumber,
+                TotalPages = paginatedList.TotalPages,
+                Items = paginatedList
+            };
 
-            return Ok(mappedComics);
+            return Ok(result);
         }
 
         [HttpGet("{comicId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetComicByIdAsync(int comicId)
+        public async Task<IActionResult> GetComicById(int comicId)
         {
             Comic comic = await _comicService.GetComicByIdAsync(comicId);
 
@@ -52,7 +69,7 @@ namespace Webcomic.Controllers
                 return NotFound();
             }
 
-            ComicDto mappedComic = _mapper.Map<ComicDto>(comic);
+            DetailComicDto mappedComic = _mapper.Map<DetailComicDto>(comic);
 
             return Ok(mappedComic);
         }
@@ -60,25 +77,46 @@ namespace Webcomic.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateComicAsync([FromBody] ComicDto comicToCreate)
+        public async Task<IActionResult> CreateComic([FromBody] CreateComicDto comicToCreate)
         {
-            if (comicToCreate == null)
-            {
-                return BadRequest("Comic data is invalid or empty.");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Comic mappedComic = _mapper.Map<Comic>(comicToCreate);
-            bool isCreateSuccessful = await _comicService.CreateComicAsync(mappedComic);
+            if (comicToCreate == null)
+            {
+                return BadRequest("Comic data is invalid or empty.");
+            }
 
+            //Thông thường Tag hiện ra để chọn sẽ có trong db
+            //Kiểm tra sự tồn tại của các TagIds trong danh sách đã chọn(Có thể bỏ)
+            List<int> nonExistentTags = new List<int>();
+            if (comicToCreate.SelectedTagIds != null && comicToCreate.SelectedTagIds.Any())
+            {
+                foreach (int tagId in comicToCreate.SelectedTagIds)
+                {
+                    bool tagExists = await _tagService.TagExistsAsync(tagId);
+                    if (!tagExists)
+                    {
+                        nonExistentTags.Add(tagId);
+                    }
+                }
+            }
+            if (nonExistentTags.Any())
+            {
+                //Xử lý các Tag không tồn tại ở đây(ví dụ: thông báo lỗi)
+                return BadRequest($"The following TagIds do not exist: {string.Join(", ", nonExistentTags)}");
+            }
+
+            Comic mappedComic = _mapper.Map<Comic>(comicToCreate);
+
+            bool isCreateSuccessful = await _comicService.CreateComicAsync(mappedComic);
             if (!isCreateSuccessful)
             {
                 return StatusCode(500, "Failed to create comic. Please try again later.");
             }
+
             return StatusCode(201, "Successfully created.");
         } 
 
@@ -86,12 +124,11 @@ namespace Webcomic.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateComicAsync(int comicId, [FromBody] ComicDto comicToUpdate)
+        public async Task<IActionResult> UpdateComic(int comicId, [FromBody] UpdateComicDto comicToUpdate)
         {
-            // Kiểm tra Id có khớp không
-            if(comicId != comicToUpdate.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("The provided ID does not match the comic to update.");
+                return BadRequest(ModelState);
             }
 
             if (comicToUpdate == null)
@@ -99,24 +136,38 @@ namespace Webcomic.Controllers
                 return BadRequest("Comic data is invalid or empty.");
             }
 
-            if (!ModelState.IsValid)
+            // Thông thường Tag hiện ra để chọn sẽ có trong db 
+            // Kiểm tra sự tồn tại của các TagIds trong danh sách đã chọn (Có thể bỏ)
+            List<int> nonExistentTags = new List<int>();
+            if (comicToUpdate.SelectedTagIds != null && comicToUpdate.SelectedTagIds.Any())
             {
-                return BadRequest(ModelState);
+                foreach (int tagId in comicToUpdate.SelectedTagIds)
+                {
+                    bool tagExists = await _tagService.TagExistsAsync(tagId);
+                    if (!tagExists)
+                    {
+                        nonExistentTags.Add(tagId);
+                    }
+                }
+            }
+            if (nonExistentTags.Any())
+            {
+                // Xử lý các Tag không tồn tại ở đây (ví dụ: thông báo lỗi)
+                return BadRequest($"The following TagIds do not exist: {string.Join(", ", nonExistentTags)}");
             }
 
-            // Kiểm tra xem truyện tranh có tồn tại không
-            bool isComicExisting = await _comicService.ComicExistsAsync(comicId);
-            if (!isComicExisting)
+            // Lấy existingComic từ database
+            Comic existingComic = await _comicService.GetComicByIdAsync(comicId);
+            if (existingComic == null)
             {
                 return NotFound();
             }
 
             // Cập nhật dữ liệu từ DTO vào truyện tranh hiện có
-            Comic mappedComic = _mapper.Map<Comic>(comicToUpdate);
+            Comic mappedComic = _mapper.Map<UpdateComicDto, Comic>(comicToUpdate, existingComic);
 
             // Gọi service để cập nhật truyện tranh
             bool isUpdateSuccessful = await _comicService.UpdateComicAsync(mappedComic);
-
             if (!isUpdateSuccessful)
             {
                 return StatusCode(500, "Failed to update comic. Please try again later.");
@@ -125,26 +176,19 @@ namespace Webcomic.Controllers
             return Ok("Successfully updated.");
         }
 
-        [HttpDelete("comicId")]
+        [HttpDelete("{comicId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteComicAsync(int comicId)
+        public async Task<IActionResult> DeleteComic(int comicId)
         {
-            bool isComicExisting = await _comicService.ComicExistsAsync(comicId);
-            if (!isComicExisting)
+
+            Comic existingComic = await _comicService.GetComicByIdAsync(comicId);
+            if (existingComic == null)
             {
                 return NotFound();
             }
 
-            Comic comicToDelete = await _comicService.GetComicByIdAsync(comicId);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool isDeleteSuccessful = await _comicService.DeleteComicAsync(comicToDelete);
+            bool isDeleteSuccessful = await _comicService.DeleteComicAsync(existingComic);
             if (!isDeleteSuccessful)
             {
                 return StatusCode(500, "Failed to delete comic. Please try again later.");

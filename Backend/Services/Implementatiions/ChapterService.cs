@@ -13,73 +13,51 @@ namespace Webcomic.Services.Implementatiions
         {
             _context = context;
         }
-        public bool CreateChapter(Chapter chapter, int comicId)
+        public async Task<bool> CreateChapterAsync(Chapter chapter)
         {
-            var comic = _context.Comics.FirstOrDefault(c => c.Id == comicId);
-            if(comic != null)
-            {
-                chapter.ComicId = comicId;
-                chapter.Comic = comic;
-                _context.Add(chapter);
-                return Save();
-            }
-            else
-            {
-                return false;
-            }
+            _context.Add(chapter);
+            return await SaveAsync();
         }
 
-        public bool ChapterExists(int chapterId)
+        public async Task<bool> ChapterExistsAsync(int chapterId)
         {
-            return _context.Chapters.Any(c => c.Id == chapterId);
+            return await _context.Chapters.AnyAsync(c => c.Id == chapterId);
         }
 
-        public bool DeleteChapter(Chapter chapter, int comicId)
+        public async Task<bool> DeleteChapterAsync(Chapter chapter)
         {
-            var comic = _context.Comics.FirstOrDefault(c => c.Id == comicId);
-            if (comic != null)
-            {
-                chapter.ComicId = comicId;
-                chapter.Comic = comic;
-                _context.Remove(chapter);
-                return Save();
-            }
-            else
-            {
-                return false;
-            }
+            _context.Remove(chapter);
+            return await SaveAsync();
         }
 
-        public IEnumerable<Chapter> GetAllChapters()
+        public async Task<bool> SaveAsync()
         {
-            return _context.Chapters.ToList();
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
         }
 
-        public Chapter GetChapterById(int chapterId)
+        public async Task<bool> UpdateChapterAsync(Chapter chapter)
         {
-            return _context.Chapters.FirstOrDefault(c => c.Id == chapterId);
+            _context.Update(chapter);
+            return await SaveAsync();
         }
 
-        public bool Save()
+        public async Task<ICollection<Chapter>> GetAllChaptersByComicIdAsync(int comicId)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return await _context.Chapters
+                .Where(c => c.ComicId == comicId)
+                .OrderBy(c => c.ChapterNumber)
+                .ToListAsync();
         }
 
-        public bool UpdateChapter(Chapter chapter, int comicId)
+        public IQueryable<Chapter> GetAllChaptersByComicIdAsQueryable(int comicId)
         {
-            var comic = _context.Comics.FirstOrDefault(c => c.Id == comicId);
-            if (comic != null)
-            {
-                chapter.ComicId = comicId;
-                chapter.Comic = comic;
-                _context.Update(chapter);
-                return Save();
-            }
-            else
-            {
-                return false;
-            }
+            return _context.Chapters.Where(c => c.ComicId == comicId).AsQueryable();
+        }
+
+        public async Task<Chapter> GetChapterByIdAsync(int chapterId)
+        {
+            return await _context.Chapters.FirstOrDefaultAsync(c => c.Id == chapterId);
         }
     }
 }
