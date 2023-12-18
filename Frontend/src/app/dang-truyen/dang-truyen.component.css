@@ -31,6 +31,29 @@ footer {
     margin-right: 10px;
 }
 
+/* style.css */
+
+/* Hiệu ứng và màu sắc cho nút Thêm 1 truyện mới */
+.ThemTruyenMoi {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ThemTruyenMoi:hover {
+    background-color: #218838;
+}
+
+/* Biểu tượng mây và mũi tên lên */
+.ThemTruyenMoi i {
+    margin-right: 8px;
+}
+
 .user-menu {
     position: relative;
     display: inline-block;

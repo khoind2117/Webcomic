@@ -10,6 +10,9 @@ import { DocTruyenComponent } from './doc-truyen/doc-truyen.component';
 import { DangKiComponent } from './dang-ki/dang-ki.component';
 import { ThongTinUserComponent } from './thong-tin-user/thong-tin-user.component';
 import { DangTruyenComponent } from './dang-truyen/dang-truyen.component';
+import { ChinhSuaTruyenComponent } from './chinh-sua-truyen/chinh-sua-truyen.component';
+import { ThemTruyenMoiComponent } from './them-truyen-moi/them-truyen-moi.component';
+
 
 const routes: Routes = [
   {
@@ -53,6 +56,14 @@ const routes: Routes = [
     path: 'ThongTinUser',
     component: ThongTinUserComponent
   },
+  {
+    path: 'ChinhSuaTruyen',
+    component: ChinhSuaTruyenComponent
+  },
+  {
+    path: 'ThemTruyenMoi',
+    component: ThemTruyenMoiComponent
+  }
 
 ];
 

@@ -1,0 +1,153 @@
+<!-- chinh-sua-truyen.component.html -->
+<section class="header pt-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 d-flex">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="avatar">
+                            <a [routerLink]="['']">
+                                <img src="./assets/image/Manga.jpeg" alt="Avatar">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <a [routerLink]="['']">
+                                <div class="ten-trang-web nun-nhay">Phê Truyện</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sign col-md-5 d-flex flex-column align-items-center">
+                <div class="row">
+                    <div class="sign col">
+                        <button type="button" class="btn btn-outline-primary">
+                            <a [routerLink]="['/DangNhap']">Login</a>
+                        </button>
+                    </div>
+
+                    <div class="sign col">
+                        <button type="button" class="btn btn-outline-primary">
+                            <a [routerLink]="['/DangKi']">Sign up</a>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="Menu mt-5" style="background-color: #e9e9e9; height: 60px;">
+    <div class="container">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false" [routerLink]="['/DangTruyen']">
+                                    <!-- Ẩn mũi tên mặc định bằng cách sử dụng CSS -->
+                                    <span class="dropdown-toggle-icon"></span>
+                                    <i class="fas fa-home" style="color: #cd1818;"></i>
+                                    Quay Lại
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<h2>Quản Lí Truyện</h2>
+
+
+<div class="tab">
+    <button class="tablinks" (click)="switchTab('QuanLyThongTinTruyen')">Quản lý thông tin truyện</button>
+    <button class="tablinks" (click)="switchTab('QuanLyChapTruyen')">Quản lý chap truyện</button>
+</div>
+<section class="Thong tin truyen">
+    <div id="QuanLyThongTinTruyen" class="tabcontent">
+        <h3>Quản lý thông tin truyện</h3>
+
+        <!-- Tên truyện -->
+        <label for="tenTruyen">Tên truyện:</label>
+        <input type="text" id="tenTruyen" name="tenTruyen" />
+
+        <!-- Tên tác giả -->
+        <label for="tenTacGia">Tên tác giả:</label>
+        <input type="text" id="tenTacGia" name="tenTacGia" />
+
+        <!-- Danh mục -->
+        <label for="danhMuc">Danh mục:</label>
+        <select id="danhMuc" name="danhMuc">
+            <option value="phieuLuu">Phiêu lưu</option>
+            <option value="khoaHocVienTuong">Khoa học viễn tưởng</option>
+            <option value="trinhTham">Trinh thám</option>
+            <option value="tinhCam">Tình cảm</option>
+            <option value="haiHuong">Hài hước</option>
+        </select>
+
+        <!-- Ngày sáng tác -->
+        <label for="ngayDang">Ngày Đăng:</label>
+        <input type="date" id="ngayDang" name="ngayDang" />
+
+        <!-- Ảnh bìa -->
+        <label for="anhBia">Ảnh bìa:</label>
+        <input type="file" id="anhBia" name="anhBia" (change)="previewImage($event)" accept="image/*" />
+        <img *ngIf="previewUrl" [src]="previewUrl" alt="Ảnh xem trước" class="preview-image" />
+
+
+        <!-- Mô tả -->
+        <label for="moTa">Mô tả:</label>
+        <textarea id="moTa" name="moTa" rows="4" cols="50"></textarea>
+        <!-- Nút Quay lại -->
+
+        <!-- Nút Lưu -->
+        <button class="save-button">Lưu</button>
+    </div>
+</section>
+<!-- chinh-sua-truyen.component.html -->
+
+<section class="NoiDungChuong">
+    <div id="QuanLyChapTruyen" class="tabcontent">
+        <h3>Quản lý chap truyện</h3>
+        <p>Danh sách các chap trong truyện.</p>
+        <div class="row">
+            <div class="col-md-3 mt-4">
+                <h3 class="title-with-effect">Danh sách các chương</h3>
+                <ul class="list-group">
+                    <li class="list-group-item"><a [routerLink]="['/DocTruyen']">Chương 1: Naruto Thức Tỉnh Haki Bá
+                            Vương</a></li>
+                    <li class="list-group-item">Chương 2: Naruto Hóa Siêu SaiYa</li>
+                    <li class="list-group-item">Chương 3: Naruto Thức Tỉnh Ấn Diệt Quỷ</li>
+                    <li class="list-group-item">+ Thêm Chương Mới</li>
+                    <!-- Thêm các mục danh sách chương khác ở đây -->
+                </ul>
+            </div>
+            <div class="col-md-6 mt-4">
+                <!-- Thêm text box cho phép nhập tên chương -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="tenChuongLabel">Tên Chương</span>
+                    <input type="text" class="form-control" placeholder="Nhập tên chương" aria-label="Tên Chương"
+                        aria-describedby="tenChuongLabel">
+                </div>
+
+                <h3>Nội dung chap truyện</h3>
+                <angular-editor [placeholder]="'Enter text here...'" [config]="config"></angular-editor>
+            </div>
+            <button class="save-button mt-3" style="height: 40px;width: 100px;">Lưu</button>
+
+            <!-- Nút Lưu -->
+        </div>
+    </div>
+</section>

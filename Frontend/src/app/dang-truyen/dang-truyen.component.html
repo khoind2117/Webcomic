@@ -39,6 +39,7 @@
 
 <!--Menu-->
 <section class="Menu mt-5 " style="background-color: #e9e9e9;height: 60px;">
+
     <div class="container">
         <div class="row">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -134,8 +135,11 @@
     </div>
 
 </section>
+
 <section class="product Noi Bat" id="noibat">
     <div class="container mt-3">
+        <a [routerLink]="['/ThemTruyenMoi']"><button class="ThemTruyenMoi m-3"><i
+                    class="fa-solid fa-cloud-arrow-up fa-xl"></i> Thêm 1 truyện mới</button></a>
         <div class="row">
             <div class="col-md-2">
                 <div class="col mb-5">
@@ -273,7 +277,7 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <!-- Tên truyện -->
-                                <a [routerLink]="['/info-truyen']">
+                                <a [routerLink]="['/ChinhSuaTruyen']">
                                     <h5 class="fw-bolder">Naruto</h5>
                                 </a>
                                 <!-- Số lượt xem và đánh giá -->
@@ -305,7 +309,7 @@
                         <!-- Truyện tranh actions -->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
-                                <a class="btn btn-outline-dark mt-auto" [routerLink]="['/info-truyen']">Xem</a>
+                                <a class="btn btn-outline-dark mt-auto" [routerLink]="['/ChinhSuaTruyen']">Chỉnh sửa</a>
                             </div>
                         </div>
                     </div>
