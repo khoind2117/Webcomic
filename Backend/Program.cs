@@ -24,7 +24,6 @@ builder.Services.AddScoped<IComicService, ComicService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IChapterService, ChapterService>();
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

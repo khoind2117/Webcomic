@@ -20,6 +20,8 @@ namespace Webcomic.Controllers
             _tagService = tagService;
             _mapper = mapper;
         }
+
+        // Lấy tất cả thể loại
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,6 +38,7 @@ namespace Webcomic.Controllers
             return Ok(mappedTags);
         }
 
+        // Lấy thể loại
         [HttpGet("{tagId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,6 +57,7 @@ namespace Webcomic.Controllers
             return Ok(mappedTag);
         }
 
+        // Thêm thể loại
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -96,6 +100,7 @@ namespace Webcomic.Controllers
             
         }
 
+        // Cập nhật thể loại
         [HttpPut("{tagId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -141,6 +146,8 @@ namespace Webcomic.Controllers
             
         }
 
+
+        // Xóa thể loại
         [HttpDelete("comicId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

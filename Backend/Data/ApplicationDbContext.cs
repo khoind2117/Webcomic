@@ -14,6 +14,7 @@ namespace Webcomic.Data
 
         #region DbSet
         public DbSet<Comic> Comics { get; set; }
+        public DbSet<AppUserFavoriteComic> AppUserFavoriteComics { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ComicTag> ComicTags { get; set; }
         public DbSet<Chapter> Chapters { get; set; }
@@ -32,6 +33,21 @@ namespace Webcomic.Data
                 .WithOne(ch => ch.Comic)
                 .HasForeignKey(ch => ch.ComicId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // AppUserFavoriteComic
+            modelBuilder.Entity<AppUserFavoriteComic>()
+                .ToTable("AppUserFavoriteComic")
+                .HasKey(aufc => new { aufc.AppUserId, aufc.ComicId });
+            modelBuilder.Entity<AppUserFavoriteComic>()
+                .HasOne(aufc => aufc.AppUser)
+                .WithMany(a => a.AppUserFavoriteComics)
+                .HasForeignKey(aufc => aufc.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<AppUserFavoriteComic>()
+                .HasOne(aufc => aufc.Comic)
+                .WithMany(c => c.AppUserFavoriteComics)
+                .HasForeignKey(aufc => aufc.ComicId)    
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Tag
             modelBuilder.Entity<Tag>()

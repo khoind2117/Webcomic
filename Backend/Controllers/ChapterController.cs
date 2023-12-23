@@ -32,18 +32,22 @@ namespace Webcomic.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet("{chapterId}")]
-        //public IActionResult GetChapterById(int chapterId)
-        //{
-        //    var chapter = _mapper.Map<List<ChapterDto>>(_chapterService.GetChapterById(chapterId));
+        [HttpGet("{chapterId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetChapterByComicIdAndChapterNumber(int chapterId)
+        {
+            Chapter chapter = await _chapterService.GetChapterByIdAsync(chapterId);
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //   }
+            if (chapter == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(chapter);
-        //}
+            return Ok(chapter);
+        }
+
+        // Lấy ra các chương của truyện và phân trang (10 items / 1 page)
         [HttpGet("{comicId}/{page}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -70,6 +74,7 @@ namespace Webcomic.Controllers
             return Ok(result);
         }
 
+        // Thêm chương
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -105,6 +110,7 @@ namespace Webcomic.Controllers
             return StatusCode(201, "Successfully created.");
         }
 
+        // Cập nhật chương
         [HttpPut("{chapterId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -138,6 +144,7 @@ namespace Webcomic.Controllers
             return Ok("Successfully updated.");
         }
 
+        // Xóa chương
         [HttpDelete("{chapterId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Webcomic.Data;
 using Webcomic.Models.DTOs;
+using Webcomic.Models.DTOs.AppUserFavoriteComic;
 using Webcomic.Models.DTOs.ChapterDtos;
 using Webcomic.Models.DTOs.ComicDtos;
 using Webcomic.Models.DTOs.TagDtos;
@@ -26,13 +27,19 @@ namespace Webcomic.Helpers
             //    src.Chapters.Select(c => c.Name).ToList()));
 
             CreateMap<CreateComicDto, Comic>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ComicTags, opt => opt.MapFrom(src =>
                     src.SelectedTagIds.Select(tagId => new ComicTag { TagId = tagId }).ToList()));
 
             CreateMap<UpdateComicDto, Comic>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore())
                 .ForMember(dest => dest.ComicTags, opt => opt.MapFrom(src =>
                     src.SelectedTagIds.Select(tagId => new ComicTag { TagId = tagId }).ToList()));              ;
+            #endregion
+
+            #region AppUserFavoriteComic
+            CreateMap<AppUserFavoriteComicDto, AppUserFavoriteComic>();
             #endregion
 
             #region Tag
