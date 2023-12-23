@@ -7,6 +7,8 @@ namespace Webcomic.Models.DTOs.ComicDtos
         [Required(ErrorMessage = "Name is required")]
 
         public string Name { get; set; }
+        [Required(ErrorMessage = "Image is required")]
+        public IFormFile ImageFile { get; set; }
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
 

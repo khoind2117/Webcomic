@@ -226,6 +226,21 @@ namespace Webcomic.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Webcomic.Models.Entities.AppUserFavoriteComic", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ComicId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "ComicId");
+
+                    b.HasIndex("ComicId");
+
+                    b.ToTable("AppUserFavoriteComic", (string)null);
+                });
+
             modelBuilder.Entity("Webcomic.Models.Entities.Chapter", b =>
                 {
                     b.Property<int>("Id")
@@ -270,6 +285,10 @@ namespace Webcomic.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -365,6 +384,25 @@ namespace Webcomic.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Webcomic.Models.Entities.AppUserFavoriteComic", b =>
+                {
+                    b.HasOne("Webcomic.Models.Entities.AppUser", "AppUser")
+                        .WithMany("AppUserFavoriteComics")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webcomic.Models.Entities.Comic", "Comic")
+                        .WithMany("AppUserFavoriteComics")
+                        .HasForeignKey("ComicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Comic");
+                });
+
             modelBuilder.Entity("Webcomic.Models.Entities.Chapter", b =>
                 {
                     b.HasOne("Webcomic.Models.Entities.Comic", "Comic")
@@ -394,8 +432,15 @@ namespace Webcomic.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Webcomic.Models.Entities.AppUser", b =>
+                {
+                    b.Navigation("AppUserFavoriteComics");
+                });
+
             modelBuilder.Entity("Webcomic.Models.Entities.Comic", b =>
                 {
+                    b.Navigation("AppUserFavoriteComics");
+
                     b.Navigation("Chapters");
 
                     b.Navigation("ComicTags");

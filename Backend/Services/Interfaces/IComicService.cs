@@ -1,4 +1,5 @@
-﻿using Webcomic.Models.Entities;
+﻿using Webcomic.Models.DTOs.AppUserFavoriteComic;
+using Webcomic.Models.Entities;
 
 namespace Webcomic.Services.Interfaces
 {
@@ -13,5 +14,9 @@ namespace Webcomic.Services.Interfaces
         Task<bool> SaveAsync();
 
         IQueryable<Comic> GetAllComicsAsQueryable();
+        Task<IEnumerable<Comic>> GetLatestComicsWithLatestChapter();
+        IQueryable<Comic> GetAllComicByTagAsQueryable(int tagId);
+        Task<bool> SaveFavoriteComic(AppUserFavoriteComic favoriteComic);
+        Task<bool> UnsaveFavoriteComic(AppUserFavoriteComic favoriteComic);
     }
 }
