@@ -37,7 +37,7 @@ namespace Webcomic.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
-        [HttpGet("comics")]
+        [HttpGet("get-all-comics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllComics(int page = 1)
@@ -281,8 +281,8 @@ namespace Webcomic.Controllers
         }
 
         // Lấy tất cả truyện theo thể loại và phân trang (10 items / 1 page)
-        [Route("get-all-comic-by-tag")]
-        [HttpPost]
+        [Route("get-all-comics-by-tag")]
+        [HttpGet]
         public async Task<IActionResult> GetAllComicByTag(int tagId, int page = 1)
         {
             try

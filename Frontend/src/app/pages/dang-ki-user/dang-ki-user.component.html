@@ -1,0 +1,8 @@
+<div>
+  <h2>Đăng kí</h2>
+  <input [(ngModel)]="registerData.UserName" placeholder="Username">
+  <input [(ngModel)]="registerData.Email" placeholder="Email">
+  <input [(ngModel)]="registerData.Password" type="password" placeholder="Password">
+  <input [(ngModel)]="registerData.confirmPassword" type="password" placeholder="Confirm Password">
+  <button (click)="register()">Đăng kí</button>
+</div>

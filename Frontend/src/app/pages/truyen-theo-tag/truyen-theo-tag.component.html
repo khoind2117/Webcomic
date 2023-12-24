@@ -1,0 +1,25 @@
+<h2>Danh sách truyện theo tag</h2>
+
+<div class="container">
+  <div *ngFor="let item of comicsResponse.items">
+    <div class="row align-items-center mt-2">
+      <!-- Hiển thị ảnh -->
+      <div class="col-2">
+        <img [src]="item.image" alt="{{ item.name }} Image">
+      </div>
+      <!-- Hiển thị tên truyện -->
+      <div class="col-6">
+        {{ item.name }}
+      </div>
+      <!-- Hiển thị chương mới nhất của truyện -->
+      <div class="col-2">
+
+      </div>
+      <!-- Hiển thị ngày cập nhật chương mới nhất-->
+      <div class="col-2">
+
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
