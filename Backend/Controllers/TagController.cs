@@ -22,6 +22,7 @@ namespace Webcomic.Controllers
         }
 
         // Lấy tất cả thể loại
+        [Route("get-all-tags")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -1,20 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, mapToCanActivate } from '@angular/router';
-import { InfoTruyenComponent } from './info-truyen/info-truyen.component'; // Import InfoTruyenComponent
-import { HomeComponent } from './home/home.component';
-import { DanhmucComponent } from './danhmuc/danhmuc.component';
-import { DMPhieuLuuComponent } from './dmphieu-luu/dmphieu-luu.component';
-import { ChinhSachComponent } from './chinh-sach/chinh-sach.component';
-import { DangNhapComponent } from './dang-nhap/dang-nhap.component';
-import { DocTruyenComponent } from './doc-truyen/doc-truyen.component';
-import { DangKiComponent } from './dang-ki/dang-ki.component';
-import { ThongTinUserComponent } from './thong-tin-user/thong-tin-user.component';
-import { DangTruyenComponent } from './dang-truyen/dang-truyen.component';
-import { ChinhSuaTruyenComponent } from './chinh-sua-truyen/chinh-sua-truyen.component';
-import { ThemTruyenMoiComponent } from './them-truyen-moi/them-truyen-moi.component';
+import { InfoTruyenComponent } from './pages/info-truyen/info-truyen.component'; // Import InfoTruyenComponent
+import { HomeComponent } from './pages/home/home.component';
+import { DanhmucComponent } from './pages/danhmuc/danhmuc.component';
+import { DMPhieuLuuComponent } from './pages/dmphieu-luu/dmphieu-luu.component';
+import { ChinhSachComponent } from './pages/chinh-sach/chinh-sach.component';
+import { DangNhapComponent } from './pages/dang-nhap/dang-nhap.component';
+import { DocTruyenComponent } from './pages/doc-truyen/doc-truyen.component';
+import { DangKiComponent } from './pages/dang-ki/dang-ki.component';
+import { ThongTinUserComponent } from './pages/thong-tin-user/thong-tin-user.component';
+import { DangTruyenComponent } from './pages/dang-truyen/dang-truyen.component';
+import { ChinhSuaTruyenComponent } from './pages/chinh-sua-truyen/chinh-sua-truyen.component';
+import { ThemTruyenMoiComponent } from './pages/them-truyen-moi/them-truyen-moi.component';
+import { TruyenTheoTagComponent } from './pages/truyen-theo-tag/truyen-theo-tag.component';
+import { DangNhapUserComponent } from './pages/dang-nhap-user/dang-nhap-user.component';
+import { DangKiUserComponent } from './pages/dang-ki-user/dang-ki-user.component';
 
 
 const routes: Routes = [
+  { path: 'the-loai/:id/:page', component: TruyenTheoTagComponent },
+  { path: 'dang-ki-user', component: DangKiUserComponent},
+  { path: 'dang-nhap-user', component: DangNhapUserComponent},
+
   {
     path: 'info-truyen',
     component: InfoTruyenComponent

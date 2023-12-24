@@ -1,0 +1,3 @@
+<li *ngFor="let tag of tags">
+    <a [routerLink]="['/the-loai', tag.id, 1]">{{ tag.name }}</a>
+</li>
